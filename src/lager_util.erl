@@ -388,7 +388,7 @@ validate_trace({Filter, Level, Destination}) when is_tuple(Filter); is_list(Filt
         _ when not ValidFilter ->
             {error, invalid_trace};
         L when is_list(Filter)  ->
-            {ok, {trace_all(Filter), L, Destination}};
+            {ok, {trace(Filter), L, Destination}};
         L ->
             {ok, {Filter, L, Destination}}
     catch
@@ -413,6 +413,13 @@ validate_trace_filter(Filter) ->
             _ ->
                 false
         end.
+
+trace([{any, Query}]) ->
+    glc:any(trace_acc(Query));
+trace([{all, Query}]) ->
+    trace_all(Query);
+trace(Query) ->
+    trace_all(Query).
 
 trace_all(Query) -> 
 	glc:all(trace_acc(Query)).
